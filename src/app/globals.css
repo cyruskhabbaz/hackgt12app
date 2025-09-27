@@ -48,7 +48,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-input, textarea {
+input[type=text], textarea {
   padding: 3px;
   padding-left: 8px;
   padding-right: 8px;
@@ -60,6 +60,14 @@ input, textarea {
 
 input:focus, textarea:focus {
   outline: solid 2px var(--color-content-mild);
+}
+
+input[type=checkbox] {
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
 }
 
 a.btn {
@@ -406,7 +414,7 @@ a.btn:hover {
   justify-content: center;
   align-items: center;
 
-  animation: fade-in 0.2s ease-in-out 0s 1 forwards;
+  animation: fade-in 0.4s ease-in-out 0s 1 forwards;
 }
 
 @keyframes pop-up {
@@ -431,7 +439,7 @@ a.btn:hover {
   flex-direction: column;
   justify-content: space-between;
 
-  animation: pop-up 0.2s ease-out 0s 1 forwards;
+  animation: pop-up 0.4s ease-out 0s 1 forwards;
 }
 
 .settings-top-bar {
@@ -487,4 +495,21 @@ a.btn:hover {
 
 .option {
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  width: fit-content;
+}
+
+.option-name-container {
+  margin-right: 20px;
+}
+
+.option-value-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

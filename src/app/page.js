@@ -15,12 +15,14 @@ export default function Home() {
   const [isDeselectingEvent, setIsDeselectingEvent] = useState(false);
   const [eventList, setEventList] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
+  const [isEditingEvent, setIsEditingEvent] = useState(false);
 
   useEffect(() => {
     if (isDeselectingEvent) {
       setTimeout(() => {
         setSelectedEvent(null);
         setIsDeselectingEvent(false);
+        setIsEditingEvent(false);
       }, 200);
     }
   }, [isDeselectingEvent])
@@ -88,7 +90,7 @@ export default function Home() {
             {
               selectedEvent != null ? (
                 <div className="event-details">
-                  <p className="event-title">{selectedEvent.title}</p>
+                  <input type="text" className="event-title" value={selectedEvent.title}></input>
                   <p className="event-time">
                     {(() => {
                       if (selectedEvent.allDay) {
@@ -103,6 +105,11 @@ export default function Home() {
                         + " - " + end.toLocaleDateString() + " " + end.toLocaleTimeString();
                       }
                     })()}
+                    <label>Start</label><input
+                      type="datetime-local"
+                      value=""
+                      id=""
+                    ></input>
                   </p>
                 </div>
               ) : undefined

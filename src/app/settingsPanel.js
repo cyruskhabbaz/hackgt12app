@@ -1,13 +1,16 @@
-import { settingCategories, settings } from "@/info/settings"
+import { settingCategories, SettingOption, settings } from "@/info/settings"
 import { XIcon } from "lucide-react";
 import { useEffect, useState } from "react"
 
 export default function SettingsPanel({onClose}) {
     const [selectedCategory, setSelectedCategory] = useState(Object.keys(settingCategories)[0]);
+    const [lastSettingChange, setLastSettingChange] = useState(Date.now());
 
-    console.log("cats", settingCategories);
+    console.log("selected category", selectedCategory);
 
-    console.log("sel", selectedCategory);
+    const onSettingChange = () => {
+        setLastSettingChange(Date.now())
+    }
 
     return (
         <div
@@ -42,20 +45,18 @@ export default function SettingsPanel({onClose}) {
                         }
                     </div>
                     <div className="settings-option-container">
-                        {Object.keys(settings).map((setting, i) =>
-                        settingCategories[selectedCategory].includes(setting) ?
-                        (
-                            <div key={i} className="option">
-                                <div className="option-name-container">
-                                    <p>{setting}</p>
-                                </div>
-                                <div className="option-value-container">
-                                    {/* change this to make options interface dependent on the option itself */}
-                                    {/* e.g. connected accounts will have option to connect account */}
-                                    <input type="text" value={JSON.stringify(settings[setting])}></input>
-                                </div>
-                            </div>
-                        ) : undefined
+                        {settings.map((setting, i) => {
+                            return (
+                                settingCategories[selectedCategory].includes(setting.name) ?
+                                (
+                                    <SettingOption.Component
+                                        settingOption={setting}
+                                        key={i}
+                                        onChange={onSettingChange}
+                                    />
+                                ) : undefined
+                            )
+                        }
                         )}
                     </div>
                 </div>
