@@ -1,3 +1,6 @@
 export const appInfo = {
-    name: "App Name"
+    name: "Radnel",
+    apiURLs: {
+        gcal: "https://www.googleapis.com/calendar/v3"
+    }
 }

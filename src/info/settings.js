@@ -6,13 +6,19 @@ class SettingOption {
     type = "string";
     handleChange=(()=>{});
 
-    constructor(name, value="", type="string", handleChange=(()=>{})) {
+    static categories = {};
+
+    constructor(name, value="", type="string", category="Other", handleChange=(()=>{})) {
         this.name = name;
         this.type = type;
         this.handleChange = handleChange;
         if (this.type === "boolean") {
             this.value = Boolean(value);
         }
+
+        SettingOption.categories[category] ?
+        SettingOption.categories[category].push(this.name)
+        : SettingOption.categories[category] = [this.name];
     }
 
     update(newValue) {
@@ -58,7 +64,7 @@ class SettingOption {
                             return (
                                 <input
                                     type="text"
-                                    defaultValue={settingOption.value}
+                                    value={settingOption.value}
                                     onChange={e => {
                                         fullOnChange(e.target.value);
                                     }}
@@ -69,7 +75,7 @@ class SettingOption {
                         return (
                             <input
                                 type="text"
-                                defaultValue={JSON.stringify(settingOption.value)}
+                                value={JSON.stringify(settingOption.value)}
                                 onChange={fullOnChange}
                             />
                         )
@@ -81,19 +87,9 @@ class SettingOption {
 }
 
 const settings = [
-    new SettingOption("Connected Calendar"),
-    new SettingOption("Connect Event Scraping Source (Gmail)"),
-    new SettingOption("something else", undefined,"boolean")
+    new SettingOption("Connected Calendar", undefined, undefined, "Connected Services"),
+    new SettingOption("Connect Event Scraping Source (Gmail)", undefined, undefined, "Connected Services"),
+    new SettingOption("something else", undefined, "boolean")
 ]
 
-const settingCategories = {
-    Accounts: [
-        "Connected Calendar",
-        "Connect Event Scraping Source (Gmail)"
-    ],
-    Other: [
-        "something else"
-    ]
-}
-
-export { settings, settingCategories, SettingOption };
+export { settings, SettingOption };

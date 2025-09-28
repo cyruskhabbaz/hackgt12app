@@ -1,9 +1,9 @@
-import { settingCategories, SettingOption, settings } from "@/info/settings"
+import { SettingOption, settings } from "@/info/settings"
 import { XIcon } from "lucide-react";
 import { useEffect, useState } from "react"
 
 export default function SettingsPanel({onClose}) {
-    const [selectedCategory, setSelectedCategory] = useState(Object.keys(settingCategories)[0]);
+    const [selectedCategory, setSelectedCategory] = useState(Object.keys(SettingOption.categories)[0]);
     const [lastSettingChange, setLastSettingChange] = useState(Date.now());
 
     console.log("selected category", selectedCategory);
@@ -14,15 +14,15 @@ export default function SettingsPanel({onClose}) {
 
     return (
         <div
-            className="settings-panel-bg-cover"
+            className="panel-bg-cover"
             onClick={ev => {
-                if (ev.target.className == "settings-panel-bg-cover") {
+                if (ev.target.className == "panel-bg-cover") {
                     onClose();
                 }
             }}
         >
-            <div className="settings-panel">
-                <div className="settings-top-bar">
+            <div className="panel settings-panel">
+                <div className="top-bar">
                     <p className="title">Settings</p>
                     <a className="btn" onClick={onClose}>
                         <XIcon/>
@@ -31,7 +31,7 @@ export default function SettingsPanel({onClose}) {
                 <div className="settings-split">
                     <div className="settings-category-container">
                         {
-                            Object.keys(settingCategories).map((ctg, i) => (
+                            Object.keys(SettingOption.categories).map((ctg, i) => (
                                 <a
                                     key={i}
                                     className={"category" + (selectedCategory === ctg ? " selected" : "")}
@@ -47,7 +47,7 @@ export default function SettingsPanel({onClose}) {
                     <div className="settings-option-container">
                         {settings.map((setting, i) => {
                             return (
-                                settingCategories[selectedCategory].includes(setting.name) ?
+                                SettingOption.categories[selectedCategory].includes(setting.name) ?
                                 (
                                     <SettingOption.Component
                                         settingOption={setting}

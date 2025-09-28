@@ -1,12 +1,18 @@
 "use client";
 
-import { ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, CircleXIcon, CogIcon, EditIcon, PencilIcon, SettingsIcon, SparkleIcon, SparklesIcon, SunIcon, SunMoonIcon, WandSparklesIcon, XIcon } from "lucide-react"
+import { ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, CircleXIcon, CogIcon, EditIcon, PencilIcon, SettingsIcon, SparkleIcon, SparklesIcon, SunIcon, SunMoonIcon, UserIcon, WandSparklesIcon, XIcon } from "lucide-react"
 import { appInfo } from "../info/appInfo";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import _ from "lodash";
 import SettingsPanel from "./settingsPanel";
+import AuthPanel from "./authPanel";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import Image from "next/image";
+import axios from "axios";
+
+const logoImg = require("../assets/radnel.png");
 
 const localizer = momentLocalizer(moment);
 
@@ -15,7 +21,14 @@ export default function Home() {
   const [isDeselectingEvent, setIsDeselectingEvent] = useState(false);
   const [eventList, setEventList] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
   const [isEditingEvent, setIsEditingEvent] = useState(false);
+  const [userData, setUserData] = useState({});
+
+  const [apiCalendarData, setApiCalendarData] = useState({});
+  const [calendarData, setCalendarData] = useState({});
+
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     if (isDeselectingEvent) {
@@ -29,16 +42,52 @@ export default function Home() {
 
   console.log("selected event", selectedEvent);
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(getAuth(), (user) => {
+      setCurrentUser(user);
+    });
+    return unsubscribe;
+  }, [])
+
+  console.log("ga cu", getAuth().currentUser);
+  console.log("cu", getAuth().currentUser);
+
+  // async function fetchCalendarData() {
+  //   if (!currentUser) {
+  //     return {};
+  //   }
+  //   let req = await axios.get(
+  //     appInfo.apiURLs.gcal + "calendars/primary/events",
+  //     {
+  //       params: {
+          
+  //       }
+  //     }
+  //   )
+  //   console.log(req);
+  // }
+
   return (
     <div className="app-container">
       <div className="section top-bar">
         <div className="options left"></div>
         <div className="title">
-          <p>{appInfo.name}</p>
+          <Image src={logoImg} alt="RADNEL" className="logo"/>
         </div>
-        <a className="btn" id="settings-btn" onClick={() => {setShowSettings(true)}}>
-          <CogIcon/>
-        </a>
+        <div className="options right">
+          <a className="btn" id="auth-btn" onClick={() => {setShowAuth(true)}}>
+            {
+              (currentUser && currentUser.photoURL) ? (
+                <img src={currentUser.photoURL}/>
+              ) : (
+                <UserIcon />
+              )
+            }
+          </a>
+          <a className="btn" id="settings-btn" onClick={() => {setShowSettings(true)}}>
+            <CogIcon/>
+          </a>
+        </div>
       </div>
       <div className="section main-area">
         <div className="calendar-container">
@@ -128,6 +177,12 @@ export default function Home() {
       {showSettings ?
       <SettingsPanel onClose={() => {setShowSettings(false)}}/>
       : undefined}
+      <AuthPanel
+        onClose={() => {setShowAuth(false)}}
+        currentUser={currentUser}
+        style={showAuth ? {} : {display: "none"}}
+        onUserDataUpdate={setUserData}
+      />
     </div>
   );
 }
