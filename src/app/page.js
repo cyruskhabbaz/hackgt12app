@@ -52,20 +52,40 @@ export default function Home() {
   console.log("ga cu", getAuth().currentUser);
   console.log("cu", getAuth().currentUser);
 
-  // async function fetchCalendarData() {
-  //   if (!currentUser) {
-  //     return {};
-  //   }
-  //   let req = await axios.get(
-  //     appInfo.apiURLs.gcal + "calendars/primary/events",
-  //     {
-  //       params: {
-          
-  //       }
-  //     }
-  //   )
-  //   console.log(req);
-  // }
+  async function fetchCalendarData() {
+    if (!currentUser) {
+      return {};
+    }
+
+    let oneMonth = 30 * 24 * 60 * 60 * 1000;
+    let minD = new Date(Date.now() - 2 * oneMonth);
+    let maxD = new Date(Date.now() + 2 * oneMonth);
+
+    let minDateString = minD.toISOString();
+    let maxDateString = maxD.toISOString();
+
+    let token = await currentUser.getIdToken();
+
+    let req = await axios.get(
+      appInfo.apiURLs.gcal + "calendars/primary/events",
+      {
+        params: {
+          timeMin: minDateString,
+          timeMax: maxDateString
+        },
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      }
+    )
+    console.log("cal req", req);
+  }
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchCalendarData();
+    }
+  }, [currentUser])
 
   return (
     <div className="app-container">

@@ -39,7 +39,8 @@ export default function AuthPanel({onClose, currentUser, style, onUserDataUpdate
         setAuthError(null);
         setAuthLoading(true);
         try {
-            await signInWithGoogle();
+            let credential = await signInWithGoogle();
+            console.log("credential", credential);
             setAuthLoading(false);
         } catch (err) {
             console.error("Google sign-in failed", err);
