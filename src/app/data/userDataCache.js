@@ -6,18 +6,8 @@ class UserCache {
             linkedSource: [],
             suggestedEvents: [],
             chat: {
-                botToUser: [
-                    {
-                        time: 0,
-                        content: "Hello!"
-                    }
-                ],
-                userToBot: [
-                    {
-                        time: 0,
-                        content: ""
-                    }
-                ],
+                botToUser: [],
+                userToBot: [],
             }
         };
         return newUser;

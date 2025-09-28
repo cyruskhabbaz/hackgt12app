@@ -16,6 +16,7 @@ export default function AuthPanel({onClose, currentUser, style, onUserDataUpdate
     const [passwordInput, setPasswordInput] = useState("");
 
     const [userData, setUserData] = useState({});
+    const [userDataWasLoaded, setUserDataWasLoaded] = useState(false);
 
     const router = useRouter();
 
@@ -40,7 +41,7 @@ export default function AuthPanel({onClose, currentUser, style, onUserDataUpdate
         setAuthLoading(true);
         try {
             let credential = await signInWithGoogle();
-            console.log("credential", credential);
+            // console.log("credential", credential);
             setAuthLoading(false);
         } catch (err) {
             console.error("Google sign-in failed", err);
@@ -99,7 +100,7 @@ export default function AuthPanel({onClose, currentUser, style, onUserDataUpdate
             let userRef = ref(db, "/users/" + currentUser.uid);
             onValue(userRef, snapshot => {
                 setUserData(snapshot.val());
-                if (Object.keys(userData).length === 0) {
+                if (!snapshot.exists() || Object.keys(snapshot.val()).length === 0) {
                     let userRef = ref(db, "/users/" + currentUser.uid);
                     let newUserObject = UserCache.createNewUser(currentUser.email, currentUser.displayName);
                     update(userRef, newUserObject);
@@ -111,21 +112,21 @@ export default function AuthPanel({onClose, currentUser, style, onUserDataUpdate
         }
     }, [currentUser]);
 
-    useEffect(() => {
-        if (currentUser) {
-            if (Object.keys(userData).length === 0) {
-                let userRef = ref(db, "/users/" + currentUser.uid);
-                let newUserObject = UserCache.createNewUser(currentUser.email, currentUser.displayName);
-                update(userRef, newUserObject);
-            }
-        }
-    }, [userData]);
+    // useEffect(() => {
+    //     if (currentUser && userDataWasLoaded) {
+    //         if (Object.keys(userData).length === 0) {
+    //             let userRef = ref(db, "/users/" + currentUser.uid);
+    //             let newUserObject = UserCache.createNewUser(currentUser.email, currentUser.displayName);
+    //             update(userRef, newUserObject);
+    //         }
+    //     }
+    // }, [userDataWasLoaded]);
 
     useEffect(() => {
         (typeof onUserDataUpdate === "function") && onUserDataUpdate(userData);
     }, [userData])
 
-    console.log("userData", userData);
+    // console.log("userData", userData);
 
     return (
         <div
